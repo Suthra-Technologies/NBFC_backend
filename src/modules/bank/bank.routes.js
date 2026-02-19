@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const controller = require("./bank.controller");
 const authMiddleware = require("../../middlewares/auth.middleware");
-const hasPermission = require("../../middlewares/permission.middleware");
-const PERMISSIONS = require("../../constants/permissions");
+const requirePermission = require("../../middlewares/permission.middleware");
+const permissions = require("../../constants/permissions");
 
 /**
  * @swagger
@@ -176,42 +176,42 @@ const PERMISSIONS = require("../../constants/permissions");
 router.post(
     "/",
     authMiddleware,
-    hasPermission(PERMISSIONS.CREATE_BANK),
+    requirePermission(permissions.CREATE_BANK),
     controller.createBank
 );
 
 router.get(
     "/",
     authMiddleware,
-    hasPermission(PERMISSIONS.VIEW_ALL_BANKS),
+    requirePermission(permissions.VIEW_BANK),
     controller.getAllBanks
 );
 
 router.get(
     "/:id",
     authMiddleware,
-    hasPermission(PERMISSIONS.VIEW_BANK_DETAILS),
+    requirePermission(permissions.VIEW_BANK),
     controller.getBankById
 );
 
 router.put(
     "/:id",
     authMiddleware,
-    hasPermission(PERMISSIONS.UPDATE_BANK_STATUS),
+    requirePermission(permissions.SUSPEND_BANK),
     controller.updateBank
 );
 
 router.patch(
     "/:id/status",
     authMiddleware,
-    hasPermission(PERMISSIONS.UPDATE_BANK_STATUS),
+    requirePermission(permissions.SUSPEND_BANK),
     controller.updateBank
 );
 
 router.delete(
     "/:id",
     authMiddleware,
-    hasPermission(PERMISSIONS.DELETE_BANK),
+    requirePermission(permissions.SUSPEND_BANK),
     controller.deleteBank
 );
 

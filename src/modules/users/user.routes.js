@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const controller = require("./user.controller");
 const authMiddleware = require("../../middlewares/auth.middleware");
-const hasPermission = require("../../middlewares/permission.middleware");
-const PERMISSIONS = require("../../constants/permissions");
+const requirePermission = require("../../middlewares/permission.middleware");
+const permissions = require("../../constants/permissions");
 
 /**
  * @swagger
@@ -71,7 +71,7 @@ const PERMISSIONS = require("../../constants/permissions");
 router.post(
     "/",
     authMiddleware,
-    hasPermission(PERMISSIONS.CREATE_USER),
+    requirePermission(permissions.CREATE_USER),
     controller.createUser
 );
 
@@ -98,7 +98,7 @@ router.post(
 router.get(
     "/",
     authMiddleware,
-    hasPermission(PERMISSIONS.VIEW_ALL_USERS),
+    requirePermission(permissions.VIEW_USER),
     controller.getAllUsers
 );
 
@@ -117,7 +117,7 @@ router.get(
 router.get(
     "/:id",
     authMiddleware,
-    hasPermission(PERMISSIONS.VIEW_ALL_USERS),
+    requirePermission(permissions.VIEW_USER),
     controller.getUserById
 );
 
@@ -136,7 +136,7 @@ router.get(
 router.put(
     "/:id",
     authMiddleware,
-    hasPermission(PERMISSIONS.UPDATE_USER_STATUS),
+    requirePermission(permissions.CREATE_USER),
     controller.updateUser
 );
 
@@ -155,7 +155,7 @@ router.put(
 router.delete(
     "/:id",
     authMiddleware,
-    hasPermission(PERMISSIONS.CREATE_USER), // Reusing CREATE_USER as management permission
+    requirePermission(permissions.CREATE_USER), // Reusing CREATE_USER as management permission
     controller.deleteUser
 );
 

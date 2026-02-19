@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const controller = require("./customer.controller");
 const authMiddleware = require("../../middlewares/auth.middleware");
-const hasPermission = require("../../middlewares/permission.middleware");
-const PERMISSIONS = require("../../constants/permissions");
+const requirePermission = require("../../middlewares/permission.middleware");
+const permissions = require("../../constants/permissions");
 
 /**
  * @swagger
@@ -15,35 +15,35 @@ const PERMISSIONS = require("../../constants/permissions");
 router.post(
     "/",
     authMiddleware,
-    hasPermission(PERMISSIONS.CREATE_CUSTOMER),
+    requirePermission(permissions.CREATE_CUSTOMER),
     controller.createCustomer
 );
 
 router.get(
     "/",
     authMiddleware,
-    hasPermission(PERMISSIONS.VIEW_ALL_CUSTOMERS),
+    requirePermission(permissions.VIEW_CUSTOMER),
     controller.getAllCustomers
 );
 
 router.get(
     "/:id",
     authMiddleware,
-    hasPermission(PERMISSIONS.VIEW_CUSTOMER_DETAILS),
+    requirePermission(permissions.VIEW_CUSTOMER),
     controller.getCustomerById
 );
 
 router.put(
     "/:id",
     authMiddleware,
-    hasPermission(PERMISSIONS.UPDATE_CUSTOMER),
+    requirePermission(permissions.CREATE_CUSTOMER),
     controller.updateCustomer
 );
 
 router.delete(
     "/:id",
     authMiddleware,
-    hasPermission(PERMISSIONS.UPDATE_CUSTOMER), // Usually manager/admin permission
+    requirePermission(permissions.CREATE_CUSTOMER), // Usually manager/admin permission
     controller.deleteCustomer
 );
 

@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const controller = require("./dashboard.controller");
 const authMiddleware = require("../../middlewares/auth.middleware");
-const hasPermission = require("../../middlewares/permission.middleware");
-const PERMISSIONS = require("../../constants/permissions");
+const requirePermission = require("../../middlewares/permission.middleware");
+const permissions = require("../../constants/permissions");
 
 /**
  * @swagger
@@ -27,7 +27,7 @@ const PERMISSIONS = require("../../constants/permissions");
 router.get(
     "/platform",
     authMiddleware,
-    hasPermission(PERMISSIONS.VIEW_PLATFORM_DASHBOARD),
+    requirePermission(permissions.VIEW_REPORTS),
     controller.getPlatformDashboard
 );
 
@@ -46,7 +46,7 @@ router.get(
 router.get(
     "/bank",
     authMiddleware,
-    hasPermission(PERMISSIONS.VIEW_BANK_REPORTS),
+    requirePermission(permissions.VIEW_REPORTS),
     controller.getBankDashboard
 );
 

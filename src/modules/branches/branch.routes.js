@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const controller = require("./branch.controller");
 const authMiddleware = require("../../middlewares/auth.middleware");
-const hasPermission = require("../../middlewares/permission.middleware");
-const PERMISSIONS = require("../../constants/permissions");
+const requirePermission = require("../../middlewares/permission.middleware");
+const permissions = require("../../constants/permissions");
 
 /**
  * @swagger
@@ -148,7 +148,7 @@ const PERMISSIONS = require("../../constants/permissions");
 router.post(
     "/",
     authMiddleware,
-    hasPermission(PERMISSIONS.CREATE_BRANCH),
+    requirePermission(permissions.CREATE_BRANCH),
     controller.createBranch
 );
 
@@ -180,7 +180,7 @@ router.post(
 router.get(
     "/",
     authMiddleware,
-    hasPermission(PERMISSIONS.VIEW_ALL_BRANCHES),
+    requirePermission(permissions.VIEW_BRANCH),
     controller.getAllBranches
 );
 
@@ -212,7 +212,7 @@ router.get(
 router.get(
     "/:id",
     authMiddleware,
-    hasPermission(PERMISSIONS.VIEW_ALL_BRANCHES),
+    requirePermission(permissions.VIEW_BRANCH),
     controller.getBranchById
 );
 
@@ -267,7 +267,7 @@ router.get(
 router.put(
     "/:id",
     authMiddleware,
-    hasPermission(PERMISSIONS.UPDATE_BRANCH),
+    requirePermission(permissions.CREATE_BRANCH),
     controller.updateBranch
 );
 
@@ -295,7 +295,7 @@ router.put(
 router.delete(
     "/:id",
     authMiddleware,
-    hasPermission(PERMISSIONS.DELETE_BRANCH),
+    requirePermission(permissions.CREATE_BRANCH),
     controller.deleteBranch
 );
 

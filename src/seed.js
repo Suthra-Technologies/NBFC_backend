@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 const connectDB = require("./config/db");
 const Role = require("./modules/roles/role.model");
 const User = require("./modules/users/user.model");
-const PERMISSIONS = require("./constants/permissions");
+const permissions = require("./constants/permissions");
 const { randomUUID } = require("crypto");
 
 const seedRoles = async () => {
@@ -13,67 +13,53 @@ const seedRoles = async () => {
     {
       code: "SUPER_ADMIN",
       name: "Super Admin",
-      permissions: Object.values(PERMISSIONS),
+      permissions: Object.values(permissions),
     },
     {
       code: "BANK_ADMIN",
       name: "Bank Admin",
       permissions: [
-        PERMISSIONS.CREATE_BRANCH,
-        PERMISSIONS.VIEW_ALL_BRANCHES,
-        PERMISSIONS.VIEW_BRANCH_DETAILS,
-        PERMISSIONS.UPDATE_BRANCH,
-        PERMISSIONS.DELETE_BRANCH,
-        PERMISSIONS.CREATE_USER,
-        PERMISSIONS.VIEW_ALL_USERS,
-        PERMISSIONS.UPDATE_USER_STATUS,
-        PERMISSIONS.VIEW_ALL_CUSTOMERS,
-        PERMISSIONS.VIEW_CUSTOMER_DETAILS,
-        PERMISSIONS.UPDATE_CUSTOMER,
-        PERMISSIONS.VIEW_ALL_LOANS,
-        PERMISSIONS.VIEW_LOAN_DETAILS,
-        PERMISSIONS.APPROVE_LOAN,
-        PERMISSIONS.REJECT_LOAN,
-        PERMISSIONS.VIEW_BANK_REPORTS,
+        permissions.CREATE_BRANCH,
+        permissions.VIEW_BRANCH,
+        permissions.CREATE_USER,
+        permissions.VIEW_USER,
+        permissions.CREATE_CUSTOMER,
+        permissions.VIEW_CUSTOMER,
+        permissions.CREATE_LOAN,
+        permissions.APPROVE_LOAN,
+        permissions.VIEW_LOAN,
+        permissions.VIEW_REPORTS,
       ],
     },
     {
       code: "BRANCH_MANAGER",
       name: "Branch Manager",
       permissions: [
-        PERMISSIONS.CREATE_CUSTOMER,
-        PERMISSIONS.VIEW_ALL_CUSTOMERS,
-        PERMISSIONS.VIEW_CUSTOMER_DETAILS,
-        PERMISSIONS.UPDATE_CUSTOMER,
-        PERMISSIONS.CREATE_LOAN,
-        PERMISSIONS.VIEW_ALL_LOANS,
-        PERMISSIONS.VIEW_LOAN_DETAILS,
-        PERMISSIONS.Request_LOAN_APPROVAL,
-        PERMISSIONS.VIEW_EMI,
-        PERMISSIONS.COLLECT_EMI,
-        PERMISSIONS.VIEW_BRANCH_REPORTS,
+        permissions.CREATE_CUSTOMER,
+        permissions.VIEW_CUSTOMER,
+        permissions.CREATE_LOAN,
+        permissions.VIEW_LOAN,
+        permissions.COLLECT_EMI,
+        permissions.VIEW_REPORTS,
       ],
     },
     {
       code: "EMPLOYEE",
       name: "Employee",
       permissions: [
-        PERMISSIONS.CREATE_CUSTOMER,
-        PERMISSIONS.VIEW_ALL_CUSTOMERS,
-        PERMISSIONS.CREATE_LOAN,
-        PERMISSIONS.VIEW_ALL_LOANS,
-        PERMISSIONS.VIEW_EMI,
-        PERMISSIONS.COLLECT_EMI,
+        permissions.CREATE_CUSTOMER,
+        permissions.VIEW_CUSTOMER,
+        permissions.CREATE_LOAN,
+        permissions.VIEW_LOAN,
+        permissions.COLLECT_EMI,
       ],
     },
     {
       code: "CUSTOMER",
       name: "Customer",
       permissions: [
-        PERMISSIONS.VIEW_PROFILE,
-        PERMISSIONS.UPDATE_PROFILE,
-        PERMISSIONS.VIEW_LOAN_DETAILS,
-        PERMISSIONS.VIEW_EMI,
+        permissions.VIEW_LOAN,
+        permissions.COLLECT_EMI,
       ],
     },
   ];

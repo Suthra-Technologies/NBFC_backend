@@ -7,7 +7,7 @@ const Bank = require("../bank/bank.model");
 const User = require("../users/user.model");
 const Role = require("../roles/role.model");
 
-const PERMISSIONS = require("../../constants/permissions");
+const permissions = require("../../constants/permissions");
 
 exports.createBranch = async (data, userBankId) => {
     // 1. Verify Bank Restrictions
@@ -45,17 +45,12 @@ exports.createBranch = async (data, userBankId) => {
                 code: "BRANCH_MANAGER",
                 name: "Branch Manager",
                 permissions: [
-                    PERMISSIONS.CREATE_CUSTOMER,
-                    PERMISSIONS.VIEW_ALL_CUSTOMERS,
-                    PERMISSIONS.VIEW_CUSTOMER_DETAILS,
-                    PERMISSIONS.UPDATE_CUSTOMER,
-                    PERMISSIONS.CREATE_LOAN,
-                    PERMISSIONS.VIEW_ALL_LOANS,
-                    PERMISSIONS.VIEW_LOAN_DETAILS,
-                    PERMISSIONS.Request_LOAN_APPROVAL,
-                    PERMISSIONS.VIEW_EMI,
-                    PERMISSIONS.COLLECT_EMI,
-                    PERMISSIONS.VIEW_BRANCH_REPORTS,
+                    permissions.CREATE_CUSTOMER,
+                    permissions.VIEW_CUSTOMER,
+                    permissions.CREATE_LOAN,
+                    permissions.VIEW_LOAN,
+                    permissions.COLLECT_EMI,
+                    permissions.VIEW_REPORTS,
                 ],
             });
         }

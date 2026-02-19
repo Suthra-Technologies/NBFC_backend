@@ -6,8 +6,7 @@ const Bank = require("./bank.model");
 const Role = require("../roles/role.model");
 const User = require("../users/user.model");
 
-const PERMISSIONS = require("../../constants/permissions");
-// ... imports
+const permissions = require("../../constants/permissions");
 
 exports.createBankWithAdmin = async (data) => {
   try {
@@ -28,20 +27,16 @@ exports.createBankWithAdmin = async (data) => {
         code: "BANK_ADMIN",
         name: "Bank Admin",
         permissions: [
-          PERMISSIONS.CREATE_BRANCH,
-          PERMISSIONS.VIEW_ALL_BRANCHES,
-          PERMISSIONS.UPDATE_BRANCH,
-          PERMISSIONS.DELETE_BRANCH,
-          PERMISSIONS.CREATE_USER,
-          PERMISSIONS.VIEW_ALL_USERS,
-          PERMISSIONS.UPDATE_USER_STATUS,
-          PERMISSIONS.VIEW_ALL_CUSTOMERS,
-          PERMISSIONS.VIEW_CUSTOMER_DETAILS,
-          PERMISSIONS.VIEW_ALL_LOANS,
-          PERMISSIONS.VIEW_LOAN_DETAILS,
-          PERMISSIONS.APPROVE_LOAN,
-          PERMISSIONS.REJECT_LOAN,
-          PERMISSIONS.VIEW_BANK_REPORTS,
+          permissions.CREATE_BRANCH,
+          permissions.VIEW_BRANCH,
+          permissions.CREATE_USER,
+          permissions.VIEW_USER,
+          permissions.CREATE_CUSTOMER,
+          permissions.VIEW_CUSTOMER,
+          permissions.CREATE_LOAN,
+          permissions.APPROVE_LOAN,
+          permissions.VIEW_LOAN,
+          permissions.VIEW_REPORTS,
         ],
       });
     }
