@@ -18,6 +18,7 @@ exports.createBankWithAdmin = async (data) => {
       address: data.address,
       logo: data.logo,
       maxBranches: data.maxBranches,
+      subdomain: data.subdomain || data.name.toLowerCase().replace(/[^a-z0-9]/g, ""),
     });
 
     let bankAdminRole = await Role.findOne({ code: "BANK_ADMIN" });

@@ -76,3 +76,25 @@ exports.deleteBank = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getTenantInfo = async (req, res, next) => {
+  try {
+    if (!req.tenant) {
+      return res.status(404).json({
+        success: false,
+        message: "No bank associated with this subdomain",
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        name: req.tenant.name,
+        logo: req.tenant.logo,
+        subdomain: req.tenant.subdomain,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};

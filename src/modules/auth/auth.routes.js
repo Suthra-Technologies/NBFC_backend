@@ -14,6 +14,7 @@ const controller = require("./auth.controller");
  * /auth/login:
  *   post:
  *     summary: Login user
+ *     description: Authenticates user. Access is restricted based on the subdomain (e.g., staff must login via their bank's subdomain).
  *     tags: [Auth]
  *     requestBody:
  *       required: true

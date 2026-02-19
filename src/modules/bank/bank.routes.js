@@ -63,6 +63,9 @@ const permissions = require("../../constants/permissions");
  *         subscriptionExpiry:
  *           type: string
  *           format: date
+ *         subdomain:
+ *           type: string
+ *           description: Unique subdomain for the bank portal
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -75,6 +78,7 @@ const permissions = require("../../constants/permissions");
  *         phone: "+1-555-0123"
  *         logo: "https://example.com/logo.png"
  *         maxBranches: 5
+ *         subdomain: "globalfin"
  *         address:
  *           line1: "123 Financial District"
  *           city: "New York"
@@ -127,6 +131,9 @@ const permissions = require("../../constants/permissions");
  *               maxBranches:
  *                 type: integer
  *                 description: Maximum number of branches allowed
+ *               subdomain:
+ *                 type: string
+ *                 description: Unique subdomain for the bank portal (optional, generated from name if omitted)
  *               address:
  *                 type: object
  *                 properties:
@@ -152,6 +159,7 @@ const permissions = require("../../constants/permissions");
  *               phone: "+1-555-0123"
  *               logo: "https://example.com/logo.png"
  *               maxBranches: 5
+ *               subdomain: "globalfin"
  *               address:
  *                 line1: "123 Financial District"
  *                 city: "New York"
@@ -173,6 +181,32 @@ const permissions = require("../../constants/permissions");
  *       403:
  *         description: Access denied
  */
+/**
+ * @swagger
+ * /banks/tenant-info:
+ *   get:
+ *     summary: Get bank info from subdomain (Public)
+ *     tags: [Banks]
+ *     description: Automatically detects bank based on subdomain in host header
+ *     responses:
+ *       200:
+ *         description: Tenant information
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               data:
+ *                 name: "Global Finance Bank"
+ *                 logo: "https://example.com/logo.png"
+ *                 subdomain: "globalfin"
+ *       404:
+ *         description: Bank not found for this subdomain
+ */
+router.get(
+    "/tenant-info",
+    controller.getTenantInfo
+);
+
 router.post(
     "/",
     authMiddleware,
