@@ -70,4 +70,6 @@ const userSchema = new mongoose.Schema(
 userSchema.index({ bankId: 1, roleId: 1 });
 userSchema.index({ bankId: 1, branchId: 1 });
 
-module.exports = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
+module.exports = User;
+module.exports.schema = userSchema;

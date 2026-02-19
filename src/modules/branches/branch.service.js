@@ -9,15 +9,19 @@ const Role = require("../roles/role.model");
 
 const permissions = require("../../constants/permissions");
 
-exports.createBranch = async (data, userBankId) => {
-    // 1. Verify Bank Restrictions
+exports.createBranch = async (data, userBankId, models = null) => {
+    const BranchModel = models && models.Branch ? models.Branch : Branch;
+    const UserModel = models && models.User ? models.User : User;
+    const RoleModel = models && models.Role ? models.Role : Role;
+
+    // 1. Verify Bank Restrictions (Bank is ALWAYS in main DB)
     const bank = await Bank.findOne({ _id: userBankId, isDeleted: false });
     if (!bank) {
         throw new Error("Bank not found or inactive.");
     }
 
     // Check max branches limit
-    const currentBranchCount = await Branch.countDocuments({
+    const currentBranchCount = await BranchModel.countDocuments({
         bankId: userBankId,
         isDeleted: false,
     });
@@ -29,7 +33,7 @@ exports.createBranch = async (data, userBankId) => {
     }
 
     // 2. Create Branch
-    const branch = await Branch.create({
+    const branch = await BranchModel.create({
         branchCode: data.branchCode || "BR-" + randomUUID().slice(0, 8),
         bankId: userBankId,
         name: data.name,
@@ -39,9 +43,9 @@ exports.createBranch = async (data, userBankId) => {
 
     // 3. Optional Manager Creation
     if (data.manager) {
-        let branchManagerRole = await Role.findOne({ code: "BRANCH_MANAGER" });
+        let branchManagerRole = await RoleModel.findOne({ code: "BRANCH_MANAGER" });
         if (!branchManagerRole) {
-            branchManagerRole = await Role.create({
+            branchManagerRole = await RoleModel.create({
                 code: "BRANCH_MANAGER",
                 name: "Branch Manager",
                 permissions: [
@@ -57,7 +61,7 @@ exports.createBranch = async (data, userBankId) => {
 
         const hashedPassword = await bcrypt.hash(data.manager.password, 10);
 
-        const manager = await User.create({
+        const manager = await UserModel.create({
             userId: "USR-MGR-" + randomUUID().slice(0, 8),
             bankId: userBankId,
             branchId: branch._id,
@@ -75,31 +79,33 @@ exports.createBranch = async (data, userBankId) => {
     return branch;
 };
 
-exports.getAllBranches = async (query = {}) => {
-    return await Branch.find({ ...query, isDeleted: false }).populate(
+exports.getAllBranches = async (query = {}, models = null) => {
+    const BranchModel = models && models.Branch ? models.Branch : Branch;
+    return await BranchModel.find({ ...query, isDeleted: false }).populate(
         "managerId",
         "fullName email mobile"
     );
 };
 
-exports.getBranchById = async (id) => {
-    return await Branch.findOne({ _id: id, isDeleted: false }).populate(
+exports.getBranchById = async (id, models = null) => {
+    const BranchModel = models && models.Branch ? models.Branch : Branch;
+    return await BranchModel.findOne({ _id: id, isDeleted: false }).populate(
         "managerId",
         "fullName email mobile"
     );
 };
 
-exports.updateBranch = async (id, data) => {
-    return await Branch.findByIdAndUpdate(id, data, { new: true });
+exports.updateBranch = async (id, data, models = null) => {
+    const BranchModel = models && models.Branch ? models.Branch : Branch;
+    return await BranchModel.findByIdAndUpdate(id, data, { new: true });
 };
 
-exports.deleteBranch = async (id) => {
-    const branch = await Branch.findByIdAndUpdate(
+exports.deleteBranch = async (id, models = null) => {
+    const BranchModel = models && models.Branch ? models.Branch : Branch;
+    const branch = await BranchModel.findByIdAndUpdate(
         id,
         { isDeleted: true },
         { new: true }
     );
-    // Optional: Deactivate associated users or handle other cleanup
-    // await User.updateMany({ branchId: id }, { isActive: false });
     return branch;
 };

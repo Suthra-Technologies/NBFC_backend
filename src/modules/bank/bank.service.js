@@ -8,8 +8,13 @@ const User = require("../users/user.model");
 
 const permissions = require("../../constants/permissions");
 
+const { getTenantConnection } = require("../../utils/tenantConnection");
+
 exports.createBankWithAdmin = async (data) => {
   try {
+    const subdomain = data.subdomain || data.name.toLowerCase().replace(/[^a-z0-9]/g, "");
+    const dbName = `bank_${subdomain}_db`;
+
     const bank = await Bank.create({
       bankId: "BANK-" + randomUUID().slice(0, 8),
       name: data.name,
@@ -18,13 +23,19 @@ exports.createBankWithAdmin = async (data) => {
       address: data.address,
       logo: data.logo,
       maxBranches: data.maxBranches,
-      subdomain: data.subdomain || data.name.toLowerCase().replace(/[^a-z0-9]/g, ""),
+      subdomain: subdomain,
+      dbName: dbName,
     });
 
-    let bankAdminRole = await Role.findOne({ code: "BANK_ADMIN" });
+    // Switch to Tenant Database for User and local Role creation
+    const connection = await getTenantConnection(dbName);
+    const TenantUser = connection.model("User");
+    const TenantRole = connection.model("Role");
+
+    let bankAdminRole = await TenantRole.findOne({ code: "BANK_ADMIN" });
 
     if (!bankAdminRole) {
-      bankAdminRole = await Role.create({
+      bankAdminRole = await TenantRole.create({
         code: "BANK_ADMIN",
         name: "Bank Admin",
         permissions: [
@@ -44,7 +55,7 @@ exports.createBankWithAdmin = async (data) => {
 
     const hashedPassword = await bcrypt.hash(data.adminPassword, 10);
 
-    await User.create({
+    await TenantUser.create({
       userId: "USR-" + randomUUID().slice(0, 8),
       bankId: bank._id,
       fullName: data.adminName,

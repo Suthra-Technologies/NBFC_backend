@@ -71,8 +71,8 @@ const permissions = require("../../constants/permissions");
 /**
  * @swagger
  * tags:
- *   name: Branches
- *   description: Branch management API
+ *     name: Branches
+ *     description: Branch management API. Note that all branch operations are tenant-isolated based on the subdomain used to access the API.
  */
 
 /**

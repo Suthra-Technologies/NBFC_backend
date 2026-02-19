@@ -22,23 +22,6 @@ exports.createBranch = async (req, res, next) => {
             return res.status(400).json({ message: "Bank ID is required" });
         }
 
-        // Check existing branches count
-        const bank = await Bank.findOne({ _id: targetBankId, isDeleted: false });
-        if (!bank) {
-            return res.status(404).json({ message: "Bank not found" });
-        }
-
-        const currentBranchCount = await Branch.countDocuments({
-            bankId: targetBankId,
-            isDeleted: false,
-        });
-
-        if (currentBranchCount >= bank.maxBranches) {
-            return res.status(400).json({
-                message: `Branch creation limit reached for this bank (Max: ${bank.maxBranches}).`,
-            });
-        }
-
         // Prepare create payload
         const branchData = {
             branchCode,
@@ -48,11 +31,7 @@ exports.createBranch = async (req, res, next) => {
             status: status || "ACTIVE", // Default ACTIVE
         };
 
-        // If manager is provided, we need to create the user + branch atomically ideally, but step-by-step for now
-        // Actually, branchService.createBranch handles this logic, except checking bankId and limit again.
-        // I can delegate to service, passing bankId.
-
-        const newBranch = await branchService.createBranch(branchData, targetBankId);
+        const newBranch = await branchService.createBranch(branchData, targetBankId, req.models);
 
         res.status(201).json({
             success: true,
@@ -76,7 +55,7 @@ exports.getAllBranches = async (req, res, next) => {
         // Optional query filters
         if (req.query.status) query.status = req.query.status;
 
-        const branches = await branchService.getAllBranches(query);
+        const branches = await branchService.getAllBranches(query, req.models);
 
         res.status(200).json({
             success: true,
@@ -89,7 +68,7 @@ exports.getAllBranches = async (req, res, next) => {
 
 exports.getBranchById = async (req, res, next) => {
     try {
-        const branch = await branchService.getBranchById(req.params.id);
+        const branch = await branchService.getBranchById(req.params.id, req.models);
 
         if (!branch) {
             return res.status(404).json({ message: "Branch not found" });
@@ -118,7 +97,7 @@ exports.updateBranch = async (req, res, next) => {
         const updates = req.body; // Can define status explicitly here if needed
 
         // Check ownership before update
-        const branch = await branchService.getBranchById(branchId);
+        const branch = await branchService.getBranchById(branchId, req.models);
         if (!branch) {
             return res.status(404).json({ message: "Branch not found" });
         }
@@ -130,7 +109,7 @@ exports.updateBranch = async (req, res, next) => {
             return res.status(403).json({ message: "Access denied" });
         }
 
-        const updatedBranch = await branchService.updateBranch(branchId, updates);
+        const updatedBranch = await branchService.updateBranch(branchId, updates, req.models);
 
         res.status(200).json({
             success: true,
@@ -146,7 +125,7 @@ exports.deleteBranch = async (req, res, next) => {
     try {
         const branchId = req.params.id;
 
-        const branch = await branchService.getBranchById(branchId);
+        const branch = await branchService.getBranchById(branchId, req.models);
         if (!branch) {
             return res.status(404).json({ message: "Branch not found" });
         }
@@ -158,7 +137,7 @@ exports.deleteBranch = async (req, res, next) => {
             return res.status(403).json({ message: "Access denied" });
         }
 
-        await branchService.deleteBranch(branchId);
+        await branchService.deleteBranch(branchId, req.models);
 
         res.status(200).json({
             success: true,

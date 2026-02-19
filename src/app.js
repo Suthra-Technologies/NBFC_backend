@@ -9,14 +9,23 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./docs/swagger");
 
 const app = express();
+// allow the origin to be set dynamically based on the request
 
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    origin: "*", // frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(logger);
 app.use(tenantMiddleware);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 
 app.use("/api", routes);
 

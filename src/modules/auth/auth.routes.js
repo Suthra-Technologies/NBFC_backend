@@ -34,9 +34,9 @@ const controller = require("./auth.controller");
  *                 token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  *                 user:
  *                   userId: USR-12345678
- *                   fullName: Super Admin
- *                   email: admin@nbfc.com
- *                   roleId: 65fcb1b2a8c123456789abcd
+ *                   fullName: Bank Admin
+ *                   role: BANK_ADMIN
+ *                   bankId: 65fcb1b2a8c123456789abcd
  *       401:
  *         description: Invalid credentials
  */

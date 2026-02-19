@@ -66,6 +66,9 @@ const permissions = require("../../constants/permissions");
  *         subdomain:
  *           type: string
  *           description: Unique subdomain for the bank portal
+ *         dbName:
+ *           type: string
+ *           description: Dedicated database name for this bank
  *         createdAt:
  *           type: string
  *           format: date-time

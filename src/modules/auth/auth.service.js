@@ -6,8 +6,10 @@ const Bank = require("../bank/bank.model");
 const { jwtSecret, jwtExpires } = require("../../config/env");
 
 
-exports.login = async (email, password, tenant = null) => {
-  const user = await User.findOne({ email, isDeleted: false })
+exports.login = async (email, password, tenant = null, models = null) => {
+  const UserModel = models && models.User ? models.User : User;
+
+  const user = await UserModel.findOne({ email, isDeleted: false })
     .populate("roleId")
     .populate("bankId");
 
@@ -64,8 +66,12 @@ exports.login = async (email, password, tenant = null) => {
     user: {
       userId: user.userId,
       fullName: user.fullName,
+      email: user.email,
       role: user.roleId.code,
       bankId: bankId,
+      branchId: user.branchId || null,
+      isSuperAdmin: user.roleId.code === "SUPER_ADMIN",
     },
+    permissions: user.roleId.permissions || [],
   };
 };

@@ -16,7 +16,7 @@ exports.createUser = async (req, res, next) => {
       return res.status(403).json({ message: "Access denied: Cannot create Super Admin" });
     }
 
-    const user = await userService.createUser(req.body, userBankId);
+    const user = await userService.createUser(req.body, userBankId, req.models);
     res.status(201).json({ success: true, data: user });
   } catch (err) {
     next(err);
@@ -40,7 +40,7 @@ exports.getAllUsers = async (req, res, next) => {
     if (req.query.branchId) query.branchId = req.query.branchId;
     if (req.query.bankId && req.user.role === "SUPER_ADMIN") query.bankId = req.query.bankId;
 
-    const users = await userService.getAllUsers(query);
+    const users = await userService.getAllUsers(query, req.models);
     res.status(200).json({ success: true, data: users });
   } catch (err) {
     next(err);
@@ -50,7 +50,7 @@ exports.getAllUsers = async (req, res, next) => {
 exports.getUserById = async (req, res, next) => {
   try {
     const bankId = req.user.role === "SUPER_ADMIN" ? null : req.user.bankId;
-    const user = await userService.getUserById(req.params.id, bankId);
+    const user = await userService.getUserById(req.params.id, bankId, req.models);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -65,7 +65,7 @@ exports.getUserById = async (req, res, next) => {
 exports.updateUser = async (req, res, next) => {
   try {
     const bankId = req.user.role === "SUPER_ADMIN" ? null : req.user.bankId;
-    const user = await userService.updateUser(req.params.id, req.body, bankId);
+    const user = await userService.updateUser(req.params.id, req.body, bankId, req.models);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -80,7 +80,7 @@ exports.updateUser = async (req, res, next) => {
 exports.deleteUser = async (req, res, next) => {
   try {
     const bankId = req.user.role === "SUPER_ADMIN" ? null : req.user.bankId;
-    const user = await userService.deleteUser(req.params.id, bankId);
+    const user = await userService.deleteUser(req.params.id, bankId, req.models);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });

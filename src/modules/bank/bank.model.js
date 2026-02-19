@@ -57,9 +57,16 @@ const bankSchema = new mongoose.Schema(
     subdomain: {
       type: String,
       unique: true,
-      sparse: true, // Allow nulls while maintaining uniqueness
+      sparse: true,
       trim: true,
       lowercase: true,
+    },
+
+    dbName: {
+      type: String,
+      unique: true,
+      sparse: true,
+      trim: true,
     },
 
     isDeleted: {
@@ -74,4 +81,6 @@ bankSchema.index({ bankId: 1 });
 bankSchema.index({ email: 1 });
 bankSchema.index({ subdomain: 1 });
 
-module.exports = mongoose.model("Bank", bankSchema);
+const Bank = mongoose.model("Bank", bankSchema);
+module.exports = Bank;
+module.exports.schema = bankSchema;

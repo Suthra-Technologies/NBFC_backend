@@ -49,4 +49,6 @@ const branchSchema = new mongoose.Schema(
 
 branchSchema.index({ bankId: 1, branchCode: 1 });
 
-module.exports = mongoose.model("Branch", branchSchema);
+const Branch = mongoose.model("Branch", branchSchema);
+module.exports = Branch;
+module.exports.schema = branchSchema;

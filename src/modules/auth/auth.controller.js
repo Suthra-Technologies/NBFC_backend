@@ -4,8 +4,9 @@ exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const tenant = req.tenant; // From tenant middleware
+    const models = req.models; // From tenant middleware
 
-    const result = await authService.login(email, password, tenant);
+    const result = await authService.login(email, password, tenant, models);
 
     res.json({
       success: true,
