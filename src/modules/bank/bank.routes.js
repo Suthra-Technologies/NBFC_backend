@@ -210,6 +210,12 @@ router.get(
     controller.getTenantInfo
 );
 
+router.get(
+    "/profile",
+    authMiddleware,
+    controller.getMyBank
+);
+
 router.post(
     "/",
     authMiddleware,

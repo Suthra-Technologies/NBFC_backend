@@ -32,12 +32,16 @@ exports.createBankWithAdmin = async (data) => {
     const TenantUser = connection.model("User");
     const TenantRole = connection.model("Role");
 
-    let bankAdminRole = await TenantRole.findOne({ code: "BANK_ADMIN" });
-
-    if (!bankAdminRole) {
-      bankAdminRole = await TenantRole.create({
+    // Seed default roles for the new bank
+    const defaultRoles = [
+      {
         code: "BANK_ADMIN",
         name: "Bank Admin",
+        permissions: Object.values(permissions),
+      },
+      {
+        code: "BRANCH_ADMIN",
+        name: "Branch Administrator",
         permissions: [
           permissions.CREATE_BRANCH,
           permissions.VIEW_BRANCH,
@@ -46,12 +50,59 @@ exports.createBankWithAdmin = async (data) => {
           permissions.CREATE_CUSTOMER,
           permissions.VIEW_CUSTOMER,
           permissions.CREATE_LOAN,
-          permissions.APPROVE_LOAN,
           permissions.VIEW_LOAN,
           permissions.VIEW_REPORTS,
         ],
-      });
+      },
+      {
+        code: "MANAGER",
+        name: "Branch Manager",
+        permissions: [
+          permissions.VIEW_USER,
+          permissions.CREATE_USER,
+          permissions.VIEW_BRANCH,
+          permissions.CREATE_CUSTOMER,
+          permissions.VIEW_CUSTOMER,
+          permissions.CREATE_LOAN,
+          permissions.VIEW_LOAN,
+          permissions.VIEW_REPORTS,
+        ],
+      },
+      {
+        code: "STAFF",
+        name: "Operations Staff",
+        permissions: [
+          permissions.CREATE_CUSTOMER,
+          permissions.VIEW_CUSTOMER,
+          permissions.VIEW_LOAN,
+        ],
+      },
+      {
+        code: "CASHIER",
+        name: "Cashier",
+        permissions: [
+          permissions.VIEW_CUSTOMER,
+          permissions.COLLECT_EMI,
+        ],
+      },
+      {
+        code: "ACCOUNTANT",
+        name: "Bank Accountant",
+        permissions: [
+          permissions.VIEW_REPORTS,
+          permissions.VIEW_LOAN,
+        ],
+      },
+    ];
+
+    for (const roleData of defaultRoles) {
+      const existingRole = await TenantRole.findOne({ code: roleData.code });
+      if (!existingRole) {
+        await TenantRole.create(roleData);
+      }
     }
+
+    const bankAdminRole = await TenantRole.findOne({ code: "BANK_ADMIN" });
 
     const hashedPassword = await bcrypt.hash(data.adminPassword, 10);
 
@@ -76,9 +127,13 @@ exports.getAllBanks = async () => {
   return await Bank.find({ isDeleted: false });
 };
 
-// get bank by id
+// get bank by id (supports both Logical bankId and MongoDB _id)
 exports.getBankById = async (id) => {
-  return await Bank.findOne({ _id: id, isDeleted: false });
+  const isObjectId = mongoose.Types.ObjectId.isValid(id);
+  const query = isObjectId ? { _id: id } : { bankId: id };
+  query.isDeleted = false;
+  
+  return await Bank.findOne(query);
 };
 
 // update bank

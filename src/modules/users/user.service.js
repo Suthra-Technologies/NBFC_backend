@@ -23,7 +23,7 @@ exports.createUser = async (data, creatorBankId = null, models = null) => {
 
 exports.getAllUsers = async (query = {}, models = null) => {
   const UserModel = models && models.User ? models.User : User;
-  return await UserModel.find({ ...query, isDeleted: false })
+  return await UserModel.find({ ...query, isDeleted: { $ne: true } })
     .populate("roleId", "name code")
     .populate("bankId", "name")
     .populate("branchId", "name");

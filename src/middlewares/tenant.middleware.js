@@ -38,7 +38,11 @@ module.exports = async (req, res, next) => {
                     req.models = {
                         User: connection.model("User"),
                         Branch: connection.model("Branch"),
+                        Role: connection.model("Role"),
+                        Customer: connection.model("Customer"),
+                        Loan: connection.model("Loan"),
                     };
+
                 }
             }
         } catch (error) {
