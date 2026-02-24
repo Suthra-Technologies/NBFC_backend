@@ -8,6 +8,7 @@ const roleSchema = require("../modules/roles/role.model").schema;
 const bankSchema = require("../modules/bank/bank.model").schema;
 const customerSchema = require("../modules/customers/customer.model").schema;
 const loanSchema = require("../modules/loans/loan.model").schema;
+const memberSchema = require("../modules/producer-company/member.model").schema;
 
 const connectionOptions = {
     useNewUrlParser: true,
@@ -49,6 +50,7 @@ const getTenantConnection = async (dbName) => {
         connection.model("Bank", bankSchema); 
         connection.model("Customer", customerSchema);
         connection.model("Loan", loanSchema);
+        connection.model("Member", memberSchema);
 
         connectionPool[dbName] = connection;
         console.log(`Connected to Tenant DB: ${dbName}`);

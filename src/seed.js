@@ -18,18 +18,7 @@ const seedRoles = async () => {
     {
       code: "BANK_ADMIN",
       name: "Bank Admin",
-      permissions: [
-        permissions.CREATE_BRANCH,
-        permissions.VIEW_BRANCH,
-        permissions.CREATE_USER,
-        permissions.VIEW_USER,
-        permissions.CREATE_CUSTOMER,
-        permissions.VIEW_CUSTOMER,
-        permissions.CREATE_LOAN,
-        permissions.APPROVE_LOAN,
-        permissions.VIEW_LOAN,
-        permissions.VIEW_REPORTS,
-      ],
+      permissions: Object.values(permissions).filter(p => !["CREATE_BANK", "SUSPEND_BANK", "VIEW_AUDIT_LOGS"].includes(p)),
     },
     {
       code: "BRANCH_MANAGER",

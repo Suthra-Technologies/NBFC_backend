@@ -23,6 +23,7 @@ module.exports = async (req, res, next) => {
         // 2. Fallback to Host header resolution
         // Handle Localhost/IPs
         const isLocal = hostname === "localhost" ||
+            hostname.endsWith(".localhost") ||
             hostname.startsWith("127.0.0.") ||
             hostname.startsWith("192.168.");
 
@@ -59,6 +60,7 @@ module.exports = async (req, res, next) => {
                         Customer: connection.model("Customer"),
                         Loan: connection.model("Loan"),
                         Role: connection.model("Role"),
+                        Member: connection.model("Member"),
                     };
 
                 }

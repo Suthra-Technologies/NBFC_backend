@@ -15,11 +15,38 @@ exports.getRoles = async (models = null, userRole = null) => {
     const permissions = require("../../constants/permissions");
     const defaultRoles = [
       { code: "BANK_ADMIN", name: "Bank Admin", permissions: Object.values(permissions) },
-      { code: "BRANCH_ADMIN", name: "Branch Administrator", permissions: [permissions.CREATE_BRANCH, permissions.VIEW_BRANCH, permissions.CREATE_USER, permissions.VIEW_USER, permissions.CREATE_CUSTOMER, permissions.VIEW_CUSTOMER, permissions.CREATE_LOAN, permissions.VIEW_LOAN, permissions.VIEW_REPORTS] },
-      { code: "MANAGER", name: "Branch Manager", permissions: [permissions.VIEW_USER, permissions.CREATE_USER, permissions.VIEW_BRANCH, permissions.CREATE_CUSTOMER, permissions.VIEW_CUSTOMER, permissions.CREATE_LOAN, permissions.VIEW_LOAN, permissions.VIEW_REPORTS] },
-      { code: "STAFF", name: "Operations Staff", permissions: [permissions.VIEW_USER, permissions.CREATE_CUSTOMER, permissions.VIEW_CUSTOMER, permissions.VIEW_LOAN] },
-      { code: "CASHIER", name: "Cashier", permissions: [permissions.VIEW_CUSTOMER, permissions.COLLECT_EMI] },
-      { code: "ACCOUNTANT", name: "Bank Accountant", permissions: [permissions.VIEW_REPORTS, permissions.VIEW_LOAN] },
+      { code: "BRANCH_ADMIN", name: "Branch Administrator", permissions: [
+        permissions.CREATE_BRANCH, permissions.VIEW_BRANCH, permissions.UPDATE_BRANCH,
+        permissions.CREATE_USER, permissions.VIEW_USER, permissions.MANAGE_ROLES,
+        permissions.CREATE_CUSTOMER, permissions.VIEW_CUSTOMER, permissions.UPDATE_CUSTOMER,
+        permissions.CREATE_LOAN, permissions.VIEW_LOAN, permissions.APPROVE_LOAN, permissions.DISBURSE_LOAN,
+        permissions.COLLECT_EMI, permissions.CLOSE_LOAN,
+        permissions.MANAGE_PRODUCER_MEMBERS, permissions.MANAGE_SHARE_CAPITAL, permissions.MANAGE_DEPOSITS, permissions.MANAGE_INSURANCE,
+        permissions.MANAGE_ACCOUNTS, permissions.MANAGE_VOUCHERS, permissions.VIEW_LEDGER,
+        permissions.VIEW_REPORTS, permissions.VIEW_ANALYTICS, permissions.VIEW_MIS_REPORTS
+      ]},
+      { code: "MANAGER", name: "Branch Manager", permissions: [
+        permissions.VIEW_BRANCH, permissions.CREATE_USER, permissions.VIEW_USER,
+        permissions.CREATE_CUSTOMER, permissions.VIEW_CUSTOMER, permissions.UPDATE_CUSTOMER,
+        permissions.CREATE_LOAN, permissions.VIEW_LOAN, permissions.APPROVE_LOAN,
+        permissions.COLLECT_EMI, permissions.CLOSE_LOAN,
+        permissions.MANAGE_PRODUCER_MEMBERS, permissions.MANAGE_DEPOSITS,
+        permissions.VIEW_LEDGER, permissions.VIEW_REPORTS, permissions.VIEW_ANALYTICS
+      ]},
+      { code: "STAFF", name: "Operations Staff", permissions: [
+        permissions.VIEW_USER, permissions.CREATE_CUSTOMER, permissions.VIEW_CUSTOMER,
+        permissions.VIEW_LOAN, permissions.CREATE_LOAN, permissions.COLLECT_EMI,
+        permissions.MANAGE_PRODUCER_MEMBERS, permissions.MANAGE_DEPOSITS
+      ]},
+      { code: "CASHIER", name: "Cashier", permissions: [
+        permissions.VIEW_CUSTOMER, permissions.COLLECT_EMI, permissions.VIEW_LOAN,
+        permissions.PRODUCER_CASH_OPERATIONS, permissions.MANAGE_VOUCHERS
+      ]},
+      { code: "ACCOUNTANT", name: "Bank Accountant", permissions: [
+        permissions.VIEW_REPORTS, permissions.VIEW_LOAN, permissions.VIEW_LEDGER,
+        permissions.MANAGE_ACCOUNTS, permissions.MANAGE_VOUCHERS, permissions.MANAGE_CHEQUES,
+        permissions.VIEW_ANALYTICS, permissions.VIEW_MIS_REPORTS
+      ]},
     ];
 
     let needsRefresh = false;
