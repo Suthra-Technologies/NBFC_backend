@@ -17,3 +17,12 @@ exports.getRoles = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.updateRolePermissions = async (req, res, next) => {
+  try {
+    const role = await roleService.updateRolePermissions(req.params.id, req.body.permissions, req.models);
+    res.json({ success: true, data: role });
+  } catch (err) {
+    next(err);
+  }
+};

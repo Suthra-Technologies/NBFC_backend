@@ -73,4 +73,32 @@ router.post("/", authMiddleware, controller.createRole);
  */
 router.get("/", authMiddleware, controller.getRoles);
 
+/**
+ * @swagger
+ * /roles/{id}:
+ *   put:
+ *     summary: Update role permissions
+ *     tags: [Roles]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           example:
+ *             permissions:
+ *               - CREATE_LOAN
+ *               - VIEW_LOAN
+ *     responses:
+ *       200:
+ *         description: Role permissions updated successfully
+ */
+router.put("/:id", authMiddleware, controller.updateRolePermissions);
+
 module.exports = router;

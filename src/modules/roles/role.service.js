@@ -54,3 +54,14 @@ exports.getRoles = async (models = null, userRole = null) => {
 
   return roles;
 };
+
+exports.updateRolePermissions = async (id, permissions, models = null) => {
+  const RoleModel = models && models.Role ? models.Role : Role;
+  const role = await RoleModel.findByIdAndUpdate(
+    id,
+    { $set: { permissions } },
+    { new: true }
+  );
+  if (!role) throw new Error("Role not found");
+  return role;
+};
