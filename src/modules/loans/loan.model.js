@@ -92,4 +92,6 @@ const loanSchema = new mongoose.Schema(
 loanSchema.index({ bankId: 1, branchId: 1, status: 1 });
 loanSchema.index({ bankId: 1, customerId: 1 });
 
-module.exports = mongoose.model("Loan", loanSchema);
+const Loan = mongoose.model("Loan", loanSchema);
+module.exports = Loan;
+module.exports.schema = loanSchema;

@@ -13,10 +13,28 @@ module.exports = async (req, res, next) => {
     const parts = hostname.split(".");
 
     let subdomain = null;
-    if (hostname.includes("localhost")) {
-        if (parts.length > 1) subdomain = parts[0];
-    } else if (parts.length > 2) {
-        subdomain = parts[0];
+
+    // 1. Check custom header (Takes priority, set by frontend API client)
+    const headerSubdomain = req.get("x-tenant-id");
+
+    if (headerSubdomain && headerSubdomain !== "default") {
+        subdomain = headerSubdomain;
+    } else {
+        // 2. Fallback to Host header resolution
+        // Handle Localhost/IPs
+        const isLocal = hostname === "localhost" ||
+            hostname.startsWith("127.0.0.") ||
+            hostname.startsWith("192.168.");
+
+        if (isLocal) {
+            // sub.localhost
+            if (parts.length > 1 && isNaN(parts[0])) subdomain = parts[0];
+        } else {
+            // Production: subdomain.domain.com (at least 3 parts)
+            if (parts.length >= 3) {
+                subdomain = parts[0];
+            }
+        }
     }
 
     if (subdomain && !["www", "api", "admin"].includes(subdomain.toLowerCase())) {
@@ -38,9 +56,9 @@ module.exports = async (req, res, next) => {
                     req.models = {
                         User: connection.model("User"),
                         Branch: connection.model("Branch"),
-                        Role: connection.model("Role"),
                         Customer: connection.model("Customer"),
                         Loan: connection.model("Loan"),
+                        Role: connection.model("Role"),
                     };
 
                 }
