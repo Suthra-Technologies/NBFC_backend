@@ -98,3 +98,24 @@ exports.getTenantInfo = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getMyBank = async (req, res, next) => {
+  try {
+    if (!req.user.bankId) {
+      return res.status(403).json({ message: "No bank associated with this account" });
+    }
+
+    const bank = await bankService.getBankById(req.user.bankId);
+
+    if (!bank) {
+      return res.status(404).json({ message: "Bank not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: bank,
+    });
+  } catch (err) {
+    next(err);
+  }
+};

@@ -11,9 +11,10 @@ exports.getPlatformDashboard = async (req, res, next) => {
 
 exports.getBankDashboard = async (req, res, next) => {
     try {
-        const stats = await dashboardService.getBankStats(req.user.bankId);
+        const stats = await dashboardService.getBankStats(req.user.bankId, req.models);
         res.status(200).json({ success: true, data: stats });
     } catch (err) {
         next(err);
     }
 };
+

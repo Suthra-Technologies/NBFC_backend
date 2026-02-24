@@ -60,6 +60,7 @@ module.exports = async (req, res, next) => {
                         Loan: connection.model("Loan"),
                         Role: connection.model("Role"),
                     };
+
                 }
             }
         } catch (error) {

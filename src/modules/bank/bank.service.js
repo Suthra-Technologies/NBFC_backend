@@ -127,9 +127,13 @@ exports.getAllBanks = async () => {
   return await Bank.find({ isDeleted: false });
 };
 
-// get bank by id
+// get bank by id (supports both Logical bankId and MongoDB _id)
 exports.getBankById = async (id) => {
-  return await Bank.findOne({ _id: id, isDeleted: false });
+  const isObjectId = mongoose.Types.ObjectId.isValid(id);
+  const query = isObjectId ? { _id: id } : { bankId: id };
+  query.isDeleted = false;
+  
+  return await Bank.findOne(query);
 };
 
 // update bank

@@ -45,10 +45,8 @@ const getTenantConnection = async (dbName) => {
         // Register ALL models on this connection so populate works
         connection.model("User", userSchema);
         connection.model("Branch", branchSchema);
-        connection.model("Role", roleSchema);
-        connection.model("Bank", bankSchema);
-        connection.model("Customer", customerSchema);
-        connection.model("Loan", loanSchema);
+        connection.model("Role", roleSchema); // Roles are global but synced/available
+        connection.model("Bank", bankSchema); // Bank is global but needed for refs
 
         connectionPool[dbName] = connection;
         console.log(`Connected to Tenant DB: ${dbName}`);

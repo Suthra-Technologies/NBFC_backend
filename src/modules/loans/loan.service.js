@@ -1,8 +1,8 @@
-const Loan = require("./loan.model");
+const LoanMain = require("./loan.model");
 const { randomUUID } = require("crypto");
 
-exports.createLoan = async (data, bankId, branchId) => {
-    // Simple EMI Calculation logic can be added here
+exports.createLoan = async (data, bankId, branchId, models = null) => {
+    const Loan = models && models.Loan ? models.Loan : LoanMain;
     const principal = data.principalAmount;
     const rate = data.interestRate / 100 / 12; // Monthly rate
     const months = data.tenureMonths;
@@ -30,20 +30,23 @@ exports.createLoan = async (data, bankId, branchId) => {
     });
 };
 
-exports.getAllLoans = async (query = {}) => {
+exports.getAllLoans = async (query = {}, models = null) => {
+    const Loan = models && models.Loan ? models.Loan : LoanMain;
     return await Loan.find({ ...query, isDeleted: false })
         .populate("customerId", "personalInfo")
         .populate("bankId", "name")
         .populate("branchId", "name");
 };
 
-exports.getLoanById = async (id, bankId = null) => {
+exports.getLoanById = async (id, bankId = null, models = null) => {
+    const Loan = models && models.Loan ? models.Loan : LoanMain;
     const query = { _id: id, isDeleted: false };
     if (bankId) query.bankId = bankId;
     return await Loan.findOne(query).populate("customerId bankId branchId");
 };
 
-exports.updateStatus = async (id, status, userId, bankId = null) => {
+exports.updateStatus = async (id, status, userId, bankId = null, models = null) => {
+    const Loan = models && models.Loan ? models.Loan : LoanMain;
     const query = { _id: id, isDeleted: false };
     if (bankId) query.bankId = bankId;
 
@@ -57,3 +60,4 @@ exports.updateStatus = async (id, status, userId, bankId = null) => {
 
     return await Loan.findOneAndUpdate(query, update, { new: true });
 };
+
