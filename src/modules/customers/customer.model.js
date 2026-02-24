@@ -67,4 +67,6 @@ const customerSchema = new mongoose.Schema(
 customerSchema.index({ bankId: 1, branchId: 1 });
 customerSchema.index({ bankId: 1, "personalInfo.mobile": 1 });
 
-module.exports = mongoose.model("Customer", customerSchema);
+const Customer = mongoose.model("Customer", customerSchema);
+module.exports = Customer;
+module.exports.schema = customerSchema;
