@@ -21,22 +21,29 @@ module.exports = async (req, res, next) => {
     if (decoded.bankId) {
       const bank = await Bank.findById(decoded.bankId);
       if (bank && bank.dbName) {
+        console.log(`[Auth] Resolving user ${decoded.userId} on tenant ${bank.dbName}`);
         const connection = await getTenantConnection(bank.dbName);
         const TenantUser = connection.model("User");
         user = await TenantUser.findById(decoded.userId)
-          .populate("roleId")
-          .populate("bankId");
+          .populate("roleId");
+        
+        if (user) {
+           console.log(`[Auth] User found in tenant DB: ${user.email}, roleId: ${user.roleId?._id}`);
+        } else {
+           console.log(`[Auth] User NOT found in tenant DB.`);
+        }
       }
     }
 
     // Fallback: look in main DB (for SUPER_ADMIN)
     if (!user) {
+      console.log(`[Auth] Falling back to main DB for user ${decoded.userId}`);
       user = await User.findById(decoded.userId)
-        .populate("roleId")
-        .populate("bankId");
+        .populate("roleId");
     }
 
     if (!user || !user.isActive) {
+      console.log(`[Auth] Auth Failed: user is ${!user ? 'null' : 'inactive'}`);
       return res.status(401).json({ success: false, message: "Invalid user" });
     }
 
@@ -45,9 +52,11 @@ module.exports = async (req, res, next) => {
       userId: user.userId,
       bankId: decoded.bankId,
       branchId: decoded.branchId,
-      role: user.roleId.code,
-      permissions: user.roleId.permissions || [],
+      role: user.roleId?.code || 'USER',
+      permissions: user.roleId?.permissions || [],
     };
+    
+    console.log(`[Auth] Success: ${user.email} (${req.user.role})`);
 
     // If tenant user, attach their models for downstream use
     if (decoded.bankId && !req.models) {
@@ -64,9 +73,9 @@ module.exports = async (req, res, next) => {
       }
     }
 
-
     next();
   } catch (error) {
-    return res.status(401).json({ success: false, message: "Invalid token" });
+    console.error("[Auth] Exception:", error.message);
+    return res.status(401).json({ success: false, message: "Invalid token or session error" });
   }
 };
