@@ -58,11 +58,16 @@ exports.createBankWithAdmin = async (data) => {
         code: "BANK_ADMIN",
         name: "Bank Administrator",
         permissions: [
-          permissions.CREATE_BRANCH, permissions.VIEW_BRANCH,
-          permissions.CREATE_USER, permissions.VIEW_USER,
-          permissions.CREATE_CUSTOMER, permissions.VIEW_CUSTOMER,
-          permissions.CREATE_LOAN, permissions.APPROVE_LOAN, permissions.VIEW_LOAN,
-          permissions.VIEW_REPORTS,
+          permissions.CREATE_BRANCH, permissions.VIEW_BRANCH, permissions.UPDATE_BRANCH,
+          permissions.CREATE_USER, permissions.VIEW_USER, permissions.MANAGE_ROLES,
+          permissions.CREATE_CUSTOMER, permissions.VIEW_CUSTOMER, permissions.UPDATE_CUSTOMER,
+          permissions.CREATE_LOAN, permissions.APPROVE_LOAN, permissions.VIEW_LOAN, permissions.DISBURSE_LOAN,
+          permissions.COLLECT_EMI, permissions.CLOSE_LOAN,
+          permissions.MANAGE_PRODUCER_MEMBERS, permissions.MANAGE_SHARE_CAPITAL,
+          permissions.MANAGE_DEPOSITS, permissions.MANAGE_INSURANCE,
+          permissions.PRODUCER_CASH_OPERATIONS,
+          permissions.MANAGE_ACCOUNTS, permissions.MANAGE_VOUCHERS, permissions.VIEW_LEDGER,
+          permissions.VIEW_REPORTS, permissions.VIEW_ANALYTICS,
         ],
       },
       {
@@ -71,8 +76,9 @@ exports.createBankWithAdmin = async (data) => {
         permissions: [
           permissions.VIEW_BRANCH,
           permissions.CREATE_USER, permissions.VIEW_USER,
-          permissions.CREATE_CUSTOMER, permissions.VIEW_CUSTOMER,
+          permissions.CREATE_CUSTOMER, permissions.VIEW_CUSTOMER, permissions.UPDATE_CUSTOMER,
           permissions.CREATE_LOAN, permissions.APPROVE_LOAN, permissions.VIEW_LOAN,
+          permissions.MANAGE_PRODUCER_MEMBERS,
           permissions.COLLECT_EMI, permissions.VIEW_REPORTS,
         ],
       },
@@ -83,6 +89,7 @@ exports.createBankWithAdmin = async (data) => {
           permissions.VIEW_CUSTOMER,
           permissions.COLLECT_EMI,
           permissions.VIEW_LOAN,
+          permissions.VIEW_REPORTS,
         ],
       },
     ];
@@ -96,13 +103,29 @@ exports.createBankWithAdmin = async (data) => {
     }
 
     const bankAdminRole = await TenantRole.findOne({ code: "BANK_ADMIN" });
+    const TenantBranch = connection.model("Branch");
 
-    // 5. Create Initial Bank Admin User
+    // 5. Create Initial Main Branch
+    const initialBranch = await TenantBranch.create({
+      branchCode: data.branchCode || "HO001",
+      bankId: bank._id,
+      name: data.branchName || `${data.name} - Head Office`,
+      address: {
+        line1: data.line1 || data.address?.line1,
+        city: data.city || data.address?.city,
+        state: data.state || data.address?.state,
+        pincode: data.pincode || data.address?.pincode,
+      },
+      status: "ACTIVE"
+    });
+
+    // 6. Create Initial Bank Admin User
     const hashedPassword = await bcrypt.hash(data.adminPassword, 10);
 
     await TenantUser.create({
       userId: "USR-" + randomUUID().slice(0, 8),
       bankId: bank._id,
+      branchId: initialBranch._id, // Assign to the newly created branch
       fullName: data.adminName,
       email: data.adminEmail,
       mobile: data.adminMobile,
@@ -132,7 +155,7 @@ exports.getBankById = async (id) => {
   const isObjectId = mongoose.Types.ObjectId.isValid(id);
   const query = isObjectId ? { _id: id } : { bankId: id };
   query.isDeleted = false;
-  
+
   return await Bank.findOne(query);
 };
 

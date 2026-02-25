@@ -26,11 +26,11 @@ module.exports = async (req, res, next) => {
         const TenantUser = connection.model("User");
         user = await TenantUser.findById(decoded.userId)
           .populate("roleId");
-        
+
         if (user) {
-           console.log(`[Auth] User found in tenant DB: ${user.email}, roleId: ${user.roleId?._id}`);
+          console.log(`[Auth] User found in tenant DB: ${user.email}, roleId: ${user.roleId?._id}`);
         } else {
-           console.log(`[Auth] User NOT found in tenant DB.`);
+          console.log(`[Auth] User NOT found in tenant DB.`);
         }
       }
     }
@@ -50,12 +50,12 @@ module.exports = async (req, res, next) => {
     req.user = {
       id: user._id,
       userId: user.userId,
-      bankId: decoded.bankId,
-      branchId: decoded.branchId,
+      bankId: decoded.bankId || (req.tenant ? req.tenant._id.toString() : null),
+      branchId: decoded.branchId || req.get("x-branch-id"),
       role: user.roleId?.code || 'USER',
       permissions: user.roleId?.permissions || [],
     };
-    
+
     console.log(`[Auth] Success: ${user.email} (${req.user.role})`);
 
     // If tenant user, attach their models for downstream use

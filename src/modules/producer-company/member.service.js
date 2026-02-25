@@ -5,14 +5,17 @@ class MemberService {
         // Generate Member ID (In real app, this would be more complex)
         const count = await Member.countDocuments({ bankId });
         const memberId = `MBR${(count + 1).toString().padStart(5, '0')}`;
-        
+
+        // Sanitize data to prevent manual overriding of critical fields
+        const { memberId: _, bankId: __, branchId: ___, ...data } = memberData;
+
         const member = new Member({
-            ...memberData,
+            ...data,
             memberId,
             bankId,
             branchId
         });
-        
+
         return await member.save();
     }
 

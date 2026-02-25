@@ -16,7 +16,7 @@ app.use(
   cors({
     origin: "*", // frontend URL
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Tenant-Id"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Tenant-Id", "X-Branch-Id"],
     credentials: true,
   })
 );

@@ -156,6 +156,12 @@ const permissions = require("../../constants/permissions");
  *                 type: string
  *               adminPassword:
  *                 type: string
+ *               branchName:
+ *                 type: string
+ *                 description: Name of the initial primary branch
+ *               branchCode:
+ *                 type: string
+ *                 description: Unique code for the initial primary branch
  *             example:
  *               name: "Global Finance Bank"
  *               email: "contact@globalfinance.com"
@@ -172,6 +178,8 @@ const permissions = require("../../constants/permissions");
  *               adminEmail: "admin@globalfinance.com"
  *               adminMobile: "+1-555-0987"
  *               adminPassword: "SecurePassword123!"
+ *               branchName: "Head Office"
+ *               branchCode: "HO001"
  *     responses:
  *       201:
  *         description: Bank created successfully

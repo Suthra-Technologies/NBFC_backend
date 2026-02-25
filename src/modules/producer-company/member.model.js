@@ -19,7 +19,7 @@ const memberSchema = new mongoose.Schema({
     memberId: { type: String, required: true, unique: true },
     bankId: { type: mongoose.Schema.Types.ObjectId, ref: "Bank", required: true, index: true },
     branchId: { type: mongoose.Schema.Types.ObjectId, ref: "Branch", required: true, index: true },
-    
+
     memberType: { type: String, enum: ['MEMBER', 'ASSOCIATE'], default: 'MEMBER' },
     registrationDate: { type: Date, default: Date.now },
     membershipFee: { type: Number, default: 50 },
@@ -32,15 +32,48 @@ const memberSchema = new mongoose.Schema({
     dob: Date,
     age: Number,
     occupation: String,
-    aadharNo: String,
-    panNo: String,
+    aadharNo: {
+        type: String,
+        validate: {
+            validator: function (v) {
+                return !v || /^\d{12}$/.test(v);
+            },
+            message: props => `${props.value} is not a valid 12-digit Aadhar number!`
+        }
+    },
+    panNo: {
+        type: String,
+        validate: {
+            validator: function (v) {
+                return !v || /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(v);
+            },
+            message: props => `${props.value} is not a valid PAN format!`
+        }
+    },
     photoUrl: String,
     signatureUrl: String,
 
     // Mobile Details
-    mobile1: { type: String, required: true },
+    mobile1: {
+        type: String,
+        required: true,
+        validate: {
+            validator: function (v) {
+                return /^[6-9]\d{9}$/.test(v);
+            },
+            message: props => `${props.value} is not a valid 10-digit mobile number!`
+        }
+    },
     landline: String,
-    alternateMobile: String,
+    alternateMobile: {
+        type: String,
+        validate: {
+            validator: function (v) {
+                return !v || /^[6-9]\d{9}$/.test(v);
+            },
+            message: props => `${props.value} is not a valid 10-digit mobile number!`
+        }
+    },
     mobile4: String,
 
     // Addresses
@@ -53,7 +86,15 @@ const memberSchema = new mongoose.Schema({
         name: String,
         relation: String,
         age: Number,
-        mobileNo: String,
+        mobileNo: {
+            type: String,
+            validate: {
+                validator: function (v) {
+                    return !v || /^[6-9]\d{9}$/.test(v);
+                },
+                message: props => `${props.value} is not a valid 10-digit mobile number!`
+            }
+        },
         address: addressSchema,
         sameAsPermanent: { type: Boolean, default: false }
     },
