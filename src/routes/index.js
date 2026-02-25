@@ -11,5 +11,6 @@ router.use("/customers", require("../modules/customers/customer.routes"));
 router.use("/producer-company/members", require("../modules/producer-company/member.routes"));
 // router.use("/loans", require("../modules/loans/loan.routes"));
 router.use("/demo-requests", require("../modules/demo-requests/demo-request.routes"));
+router.use("/chatbot", require("../modules/chatbot/chatbot.routes"));
 
 module.exports = router;
