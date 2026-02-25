@@ -12,5 +12,6 @@ router.use("/producer-company/members", require("../modules/producer-company/mem
 // router.use("/loans", require("../modules/loans/loan.routes"));
 router.use("/demo-requests", require("../modules/demo-requests/demo-request.routes"));
 router.use("/chatbot", require("../modules/chatbot/chatbot.routes"));
+router.use("/upload", require("../modules/upload/upload.routes"));
 
 module.exports = router;
