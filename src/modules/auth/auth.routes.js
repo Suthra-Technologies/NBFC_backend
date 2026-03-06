@@ -40,6 +40,19 @@ const controller = require("./auth.controller");
  *       401:
  *         description: Invalid credentials
  */
-router.post("/login", controller.login);
+const { body } = require("express-validator");
+const validate = require("../../middlewares/validate.middleware");
+
+// 5. Injection - Sanitize and validate body inputs before controller execution
+router.post(
+    "/login",
+    [
+        body("email").isEmail().withMessage("Valid email is required").normalizeEmail(),
+        body("password").notEmpty().withMessage("Password is required"),
+    ],
+    validate,
+    controller.login
+);
+
 
 module.exports = router;

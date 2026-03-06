@@ -1,8 +1,18 @@
-module.exports = (err, req, res, next) => {
-  console.error(err.stack);
+const { nodeEnv } = require("../config/env");
 
-  res.status(err.status || 500).json({
+module.exports = (err, req, res, next) => {
+  // 9. Security Logging - Ensure errors are logged internally
+  console.error(`[Error] ${err.message}\nStack: ${err.stack}`);
+
+  // 10. Exceptional Condition Mishandling - Hide stack trace in production
+  const status = err.status || 500;
+  const message = status === 500 && nodeEnv === "production"
+    ? "An internal server error occurred"
+    : err.message;
+
+  res.status(status).json({
     success: false,
-    message: err.message || "Internal Server Error",
+    message,
+    ...(nodeEnv === "development" && { stack: err.stack }),
   });
 };

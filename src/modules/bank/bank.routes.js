@@ -224,12 +224,25 @@ router.get(
     controller.getMyBank
 );
 
+const { body } = require("express-validator");
+const validate = require("../../middlewares/validate.middleware");
+
+// 5. Injection - Validate and sanitize bank creation inputs
 router.post(
     "/",
     authMiddleware,
     requirePermission(permissions.CREATE_BANK),
+    [
+        body("name").notEmpty().withMessage("Bank name is required").trim().escape(),
+        body("email").isEmail().withMessage("Valid bank email is required").normalizeEmail(),
+        body("adminEmail").isEmail().withMessage("Valid admin email is required").normalizeEmail(),
+        body("adminPassword").isLength({ min: 8 }).withMessage("Admin password must be at least 8 characters long"),
+        body("subdomain").optional().matches(/^[a-z0-9-]+$/).withMessage("Subdomain must be lowercase alphanumeric with hyphens only"),
+    ],
+    validate,
     controller.createBank
 );
+
 
 router.get(
     "/",

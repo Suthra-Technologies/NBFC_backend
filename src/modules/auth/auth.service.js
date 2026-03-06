@@ -4,6 +4,8 @@ const User = require("../users/user.model");
 const Bank = require("../bank/bank.model");
 const { jwtSecret, jwtExpires } = require("../../config/env");
 const { getTenantConnection } = require("../../utils/tenantConnection");
+const { logAuditEvent } = require("../../utils/audit");
+
 
 /**
  * Login handler supporting both:
@@ -107,7 +109,11 @@ exports.login = async (email, password, tenant = null, models = null) => {
 
   const bankData = userBankId ? await Bank.findById(userBankId) : null;
 
+  // 9. Security Logging - Log successful login
+  logAuditEvent("USER_LOGIN", user._id, { role: roleCode, email: user.email });
+
   return {
+
     token,
     user: {
       userId: user.userId,

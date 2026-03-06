@@ -10,6 +10,8 @@ const permissions = require("../../constants/permissions");
 
 const { getTenantConnection } = require("../../utils/tenantConnection");
 const emailService = require("../../utils/email.service");
+const { logAuditEvent } = require("../../utils/audit");
+
 
 const RESERVED_SUBDOMAINS = ["admin", "api", "www", "portal", "mail", "status", "nbfc", "finware"];
 
@@ -138,6 +140,11 @@ exports.createBankWithAdmin = async (data) => {
       { name: bank.name, subdomain: bank.subdomain },
       { name: data.adminName, email: data.adminEmail, password: data.adminPassword }
     );
+
+    // 9. Security Logging - Log bank creation
+    logAuditEvent("BANK_CREATION", "SYSTEM", { bankId: bank.bankId, name: bank.name, adminEmail: data.adminEmail });
+
+
 
     return bank;
   } catch (error) {
