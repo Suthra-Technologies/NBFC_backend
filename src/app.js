@@ -31,10 +31,10 @@ app.use(
 // 7. Authentication Failures - Rate Limiting to prevent brute-force attacks
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 1000, 
   message: "Too many requests from this IP, please try again after 15 minutes",
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  standardHeaders: true, 
+  legacyHeaders: false, 
 });
 
 // Apply rate limiter to all API requests
@@ -51,7 +51,7 @@ app.use(
         "http://localhost:3001",
       ];
       // Allow requests with no origin (like mobile apps or curl)
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || allowedOrigins.includes(origin) || (origin.includes("localhost") && !origin.includes("nbfc.com"))) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));

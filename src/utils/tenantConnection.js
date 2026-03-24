@@ -8,7 +8,7 @@ const roleSchema = require("../modules/roles/role.model").schema;
 const bankSchema = require("../modules/bank/bank.model").schema;
 const customerSchema = require("../modules/customers/customer.model").schema;
 const loanSchema = require("../modules/loans/loan.model").schema;
-const memberSchema = require("../modules/producer-company/member.model").schema;
+const memberSchema = require("../modules/producer-company/member-details/models/member.model").schema;
 
 const connectionOptions = {
     useNewUrlParser: true,
