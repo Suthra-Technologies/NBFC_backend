@@ -9,6 +9,7 @@ const bankSchema = require("../modules/bank/bank.model").schema;
 const customerSchema = require("../modules/customers/customer.model").schema;
 const loanSchema = require("../modules/loans/loan.model").schema;
 const memberSchema = require("../modules/producer-company/member-details/models/member.model").schema;
+const shareSchema = require("../modules/producer-company/shares/models/shares.model").schema;
 
 const connectionOptions = {
     useNewUrlParser: true,
@@ -43,6 +44,10 @@ const getTenantConnection = async (dbName) => {
     try {
         const connection = await mongoose.createConnection(tenantUri, connectionOptions).asPromise();
 
+        // Auto-cleanup: Drop the legacy certificateNo unique index from shares collection if it exists
+        // This prevents the E11000 duplicate key exception when saving a new share issue without a cert number.
+        connection.collection('shares').dropIndex('certificateNo_1').catch(() => {});
+
         // Register ALL models on this connection so populate works
         connection.model("User", userSchema);
         connection.model("Branch", branchSchema);
@@ -51,6 +56,7 @@ const getTenantConnection = async (dbName) => {
         connection.model("Customer", customerSchema);
         connection.model("Loan", loanSchema);
         connection.model("Member", memberSchema);
+        connection.model("Shares", shareSchema);
 
         connectionPool[dbName] = connection;
         console.log(`Connected to Tenant DB: ${dbName}`);

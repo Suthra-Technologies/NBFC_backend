@@ -9,6 +9,7 @@ router.use("/branches", require("../modules/branches/branch.routes"));
 router.use("/dashboard", require("../modules/dashboard/dashboard.routes"));
 router.use("/customers", require("../modules/customers/customer.routes"));
 router.use("/producer-company/members", require("../modules/producer-company/member-details/routes/member.routes"));
+router.use("/producer-company/shares", require("../modules/producer-company/shares/routes/shares.routes"));
 // router.use("/loans", require("../modules/loans/loan.routes"));
 router.use("/demo-requests", require("../modules/demo-requests/demo-request.routes"));
 router.use("/chatbot", require("../modules/chatbot/chatbot.routes"));

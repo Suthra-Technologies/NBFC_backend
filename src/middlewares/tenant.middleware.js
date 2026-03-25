@@ -61,6 +61,7 @@ module.exports = async (req, res, next) => {
                         Loan: connection.model("Loan"),
                         Role: connection.model("Role"),
                         Member: connection.model("Member"),
+                        Shares: connection.model("Shares"),
                     };
 
                 }
