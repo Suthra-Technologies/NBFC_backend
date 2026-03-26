@@ -10,6 +10,7 @@ const customerSchema = require("../modules/customers/customer.model").schema;
 const loanSchema = require("../modules/loans/loan.model").schema;
 const memberSchema = require("../modules/producer-company/member-details/models/member.model").schema;
 const shareSchema = require("../modules/producer-company/shares/models/shares.model").schema;
+const introducerSchema = require("../modules/producer-company/introduced-details/models/introducer.model").schema;
 
 const connectionOptions = {
     useNewUrlParser: true,
@@ -57,6 +58,7 @@ const getTenantConnection = async (dbName) => {
         connection.model("Loan", loanSchema);
         connection.model("Member", memberSchema);
         connection.model("Shares", shareSchema);
+        connection.model("Introducer", introducerSchema);
 
         connectionPool[dbName] = connection;
         console.log(`Connected to Tenant DB: ${dbName}`);
